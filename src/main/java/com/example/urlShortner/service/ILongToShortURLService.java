@@ -1,7 +1,7 @@
 package com.example.urlShortner.service;
 
 import com.example.urlShortner.model.LongToShortURL;
-import com.example.urlShortner.request.ShortURLRequest;
+import com.example.urlShortner.payloads.ShortURLRequest;
 
 import java.util.Optional;
 

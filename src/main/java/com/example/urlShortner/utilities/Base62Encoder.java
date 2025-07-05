@@ -12,5 +12,4 @@ public class Base62Encoder {
         }
         return sb.reverse().toString();
     }
-
 }

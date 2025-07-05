@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Table(name = "urls")
-public class LongToShortURL {
+public class LongToShortURL implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

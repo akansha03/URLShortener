@@ -1,4 +1,4 @@
-package com.example.urlShortner.request;
+package com.example.urlShortner.payloads;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

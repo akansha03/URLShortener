@@ -1,28 +1,33 @@
 package com.example.urlShortner.controller;
 
 import com.example.urlShortner.model.LongToShortURL;
-import com.example.urlShortner.request.ShortURLRequest;
-import com.example.urlShortner.request.ShortURLResponse;
+import com.example.urlShortner.payloads.ShortURLRequest;
+import com.example.urlShortner.payloads.ShortURLResponse;
 import com.example.urlShortner.service.LongToShortURLService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/shortURL")
 public class LongToShortURLController {
 
+    @Autowired
     private final LongToShortURLService longToShortURLService;
 
     @PostMapping("/")
-    public ResponseEntity<ShortURLResponse> createShortURL(@RequestBody ShortURLRequest shortURLRequest) {
+    public ResponseEntity<ShortURLResponse> createShortURL(@Valid @RequestBody ShortURLRequest shortURLRequest) {
         /**
          * Author : Akansha Saraswat
-         * Code to
+         * Code to create a short URL from the long URL
          */
         Optional<LongToShortURL> longToShortURL = longToShortURLService.shortenURL(shortURLRequest);
 
@@ -42,10 +47,10 @@ public class LongToShortURLController {
                         .build();
             }
             else{
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

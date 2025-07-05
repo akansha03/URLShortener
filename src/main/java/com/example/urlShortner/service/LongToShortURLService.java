@@ -4,13 +4,13 @@ import com.example.urlShortner.constants.URLConstants;
 import com.example.urlShortner.exceptions.ResourceNotFoundException;
 import com.example.urlShortner.model.LongToShortURL;
 import com.example.urlShortner.repository.LongToShortURLRepository;
-import com.example.urlShortner.request.ShortURLRequest;
+import com.example.urlShortner.payloads.ShortURLRequest;
 import com.example.urlShortner.utilities.Base62Encoder;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CachePut;
 
-import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -20,8 +20,8 @@ public class LongToShortURLService implements ILongToShortURLService{
 
     private final LongToShortURLRepository repository;
 
-
     @Override
+    @CachePut(value = "shortUrlCache", key = "#result.shortCode", unless = "#result == null")
     public Optional<LongToShortURL> shortenURL(ShortURLRequest shortURLRequest) {
 
         return repository.findByLongUrl(shortURLRequest.getLongUrl())
@@ -34,7 +34,6 @@ public class LongToShortURLService implements ILongToShortURLService{
                     entity.setShortCode(shortCode);
                     entity.setShortUrl(URLConstants.BASE_URL + shortCode);
                     entity = repository.save(entity);
-
                     return Optional.of(entity);
                 });
     }
@@ -61,6 +60,7 @@ public class LongToShortURLService implements ILongToShortURLService{
     }
 
     @Override
+    @Cacheable(value = "shortUrlCache", key = "#shortCode", unless = "#result == null")
     public LongToShortURL getOriginalUrl(String shortCode) {
         return repository.findByShortCode(shortCode)
                 .orElseThrow(() -> new ResourceNotFoundException("Original URL Not found"));
